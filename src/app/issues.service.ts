@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Issue} from "./issue";
 import {issues} from "../assets/mock-issues";
 
@@ -8,7 +8,13 @@ import {issues} from "../assets/mock-issues";
 export class IssuesService {
   private issues = issues;
 
-  constructor() { }
+  constructor() {
+  }
+
+  createIssue(issue: Issue) {
+    issue.issueNo = this.issues.length + 1;
+    this.issues.push(issue);
+  }
 
   getPendingIssues(): Issue[] {
     return this.issues.filter(issue => !issue.completed);
