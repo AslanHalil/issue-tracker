@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Output} from '@angular/core';
 import {IssuesService} from "../issues.service";
 import {Issue} from "../issue";
-import {FormControl, FormGroup} from "@angular/forms";
+import {FormControl, FormGroup, Validators} from "@angular/forms";
 
 interface IssueForm {
   title: FormControl<string>;
@@ -20,17 +20,22 @@ export class IssueReportComponent {
   @Output() formClose = new EventEmitter();
 
   issueForm = new FormGroup<IssueForm>({
-    title: new FormControl('', {nonNullable: true}),
+    title: new FormControl('', {nonNullable: true, validators: Validators.required}),
     description: new FormControl('', {nonNullable: true}),
-    priority: new FormControl('', {nonNullable: true}),
-    type: new FormControl('', {nonNullable: true})
+    priority: new FormControl('', {nonNullable: true, validators: Validators.required}),
+    type: new FormControl('', {nonNullable: true, validators: Validators.required})
   });
 
   constructor(private issueService: IssuesService) {
   }
 
   addIssue() {
+    if (this.issueForm && this.issueForm.invalid) {
+      this.issueForm.markAllAsTouched();
+      return;
+    }
     this.issueService.createIssue(this.issueForm.getRawValue() as
       Issue);
+    this.formClose.emit();
   }
 }
